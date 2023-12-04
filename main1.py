@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, request, abort 
 import psycopg2 as psy
 import os 
 
@@ -26,6 +26,15 @@ class DatabaseConnection:
 
 app = Flask(__name__)
 
+
+accepted_ips = ["<IP1>", "<IP2>"]
+@app.before_request
+def restrict_ips():
+    client_ip = request.remote_addr
+
+    if client_ip not in accepted_ips:
+        abort(403) #Not Authorized
+    
 
 @app.route("/")
 def all_data():
